@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Hall4zik</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F4F5F8;--surface:#FFF;--surface-alt:#F9FAFB;
+  --border:#E3E6ED;--border-strong:#C8CEDD;
+  --text:#1A1D2A;--text-2:#5C6170;--text-3:#9CA3AF;
+  --accent:#2A6249;--accent-light:#EAF3EF;--accent-mid:#3D7D5E;
+  --st-wr-bg:#EEF2FF;--st-wr-fg:#4338CA;
+  --st-rh-bg:#FEF3C7;--st-rh-fg:#B45309;
+  --st-rd-bg:#DCFCE7;--st-rd-fg:#166534;
+  --danger:#C0392B;--danger-bg:#FEF2F2;--rec:#E53E3E;
+  --mono:'DM Mono',monospace;--sans:'Inter',system-ui,sans-serif;
+  --r:6px;--sh:0 1px 2px rgba(0,0,0,.05),0 1px 4px rgba(0,0,0,.04);
+}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0F1117;--surface:#181B24;--surface-alt:#1E2130;
+  --border:#272C3C;--border-strong:#343B50;
+  --text:#E4E8F2;--text-2:#8B92A8;--text-3:#5C6170;
+  --accent:#3A9970;--accent-light:#162B22;--accent-mid:#4DAA80;
+  --st-wr-bg:#1E1B4B;--st-wr-fg:#818CF8;
+  --st-rh-bg:#2C1F00;--st-rh-fg:#F59E0B;
+  --st-rd-bg:#0A2015;--st-rd-fg:#22C55E;
+  --danger:#EF4444;--danger-bg:#1C0808;
+}}
+:root[data-theme="dark"]{
+  --bg:#0F1117;--surface:#181B24;--surface-alt:#1E2130;
+  --border:#272C3C;--border-strong:#343B50;
+  --text:#E4E8F2;--text-2:#8B92A8;--text-3:#5C6170;
+  --accent:#3A9970;--accent-light:#162B22;--accent-mid:#4DAA80;
+  --st-wr-bg:#1E1B4B;--st-wr-fg:#818CF8;
+  --st-rh-bg:#2C1F00;--st-rh-fg:#F59E0B;
+  --st-rd-bg:#0A2015;--st-rd-fg:#22C55E;
+  --danger:#EF4444;--danger-bg:#1C0808;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0)}
+body{font-family:var(--sans);font-size:14px;line-height:1.6;color:var(--text);background:var(--bg);height:100%;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top,0);padding-bottom:env(safe-area-inset-bottom,0)}
+.shell{display:flex;flex-direction:column;flex:1;overflow:hidden;height:100%}
+/* HEADER */
+.top-header{display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;gap:12px}
+.app-brand{display:flex;align-items:center;gap:9px}
+.app-icon{width:30px;height:30px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:800;flex-shrink:0}
+.app-name{font-size:15px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.profile-pill{display:flex;align-items:center;gap:5px;padding:3px 10px;border:1px solid var(--border);border-radius:20px;cursor:pointer;font-size:11.5px;color:var(--text-2);transition:all .1s;background:var(--bg);max-width:200px}
+.profile-pill:hover{border-color:var(--accent);color:var(--accent)}
+.profile-pill span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.header-ctl{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.lang-btn{padding:4px 8px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text-2);font-family:var(--mono);font-size:11px;cursor:pointer;transition:all .1s}
+.lang-btn.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.theme-btn{padding:4px 7px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text-2);font-size:12px;cursor:pointer}
+/* TAB BAR */
+.tab-bar{display:flex;align-items:center;justify-content:center;gap:5px;padding:9px 16px;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-btn{display:inline-flex;align-items:center;gap:5px;padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-2);font-size:12.5px;font-weight:500;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .1s;flex-shrink:0}
+.tab-btn:hover{background:var(--surface-alt);color:var(--text);border-color:var(--border-strong)}
+.tab-btn.active{background:var(--accent);color:#fff;border-color:transparent}
+/* MAIN */
+.main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.view{display:none;flex:1;flex-direction:column}
+.view.active{display:flex}
+.vhead{padding:18px 24px 14px;border-bottom:1px solid var(--border);background:var(--surface);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-shrink:0;flex-wrap:wrap}
+.vtitle{font-size:15px;font-weight:600;color:var(--text)}
+.vdesc{font-size:11.5px;color:var(--text-3);margin-top:2px}
+.vbody{padding:20px 24px;flex:1}
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 13px;border-radius:var(--r);font-size:12.5px;font-weight:500;cursor:pointer;border:none;font-family:var(--sans);transition:background .1s}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-mid)}
+.btn-ghost{background:transparent;color:var(--text-2);border:1px solid var(--border)}
+.btn-ghost:hover{background:var(--surface-alt);color:var(--text)}
+/* FORMS */
+.fpanel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:18px;box-shadow:var(--sh);margin-bottom:18px}
+.fpanel-title{font-size:12.5px;font-weight:600;color:var(--text);margin-bottom:14px}
+.frow{display:grid;gap:10px;margin-bottom:10px}
+.frow-2{grid-template-columns:1fr 1fr}
+.frow-3{grid-template-columns:1fr 1fr 1fr}
+.frow-1{grid-template-columns:1fr}
+.field{display:flex;flex-direction:column;gap:4px}
+.field label{font-size:11.5px;font-weight:500;color:var(--text-2)}
+.field input,.field select,.field textarea{padding:7px 9px;border:1px solid var(--border);border-radius:var(--r);font-family:var(--sans);font-size:13px;color:var(--text);background:var(--bg);outline:none;transition:border-color .1s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent)}
+.field input[type=number]{font-family:var(--mono)}
+.field textarea{resize:vertical;min-height:68px;line-height:1.5}
+.factions{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid var(--border)}
+/* CARDS */
+.elist{display:flex;flex-direction:column;gap:8px}
+.ecard{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:13px 16px;box-shadow:var(--sh)}
+.ehead{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.etitle{font-weight:600;font-size:13px;color:var(--text)}
+.emeta{font-family:var(--mono);font-size:11px;color:var(--text-3);margin-top:3px}
+.ebody{font-size:12.5px;color:var(--text-2);margin-top:8px;white-space:pre-wrap;line-height:1.55}
+.eactions{display:flex;gap:4px;align-items:center;flex-shrink:0;flex-wrap:wrap;justify-content:flex-end}
+.act-btn{border:none;background:none;cursor:pointer;color:var(--text-3);padding:2px 5px;border-radius:4px;font-size:13px;line-height:1;transition:color .1s,background .1s}
+.act-btn:hover{color:var(--danger);background:var(--danger-bg)}
+.act-btn.move:hover{color:var(--accent);background:var(--accent-light)}
+.act-btn.to-sl{font-size:11px;padding:2px 7px;color:var(--accent);background:var(--accent-light)}
+.divl{height:1px;background:var(--border);margin:10px 0}
+.sub-label{font-size:11px;font-weight:600;color:var(--text-3);margin-bottom:4px}
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:3px;padding:2px 7px;border-radius:20px;font-size:11px;font-weight:500;white-space:nowrap}
+.b-wr{background:var(--st-wr-bg);color:var(--st-wr-fg)}
+.b-rh{background:var(--st-rh-bg);color:var(--st-rh-fg)}
+.b-rd{background:var(--st-rd-bg);color:var(--st-rd-fg)}
+/* GROUPS & PROFILES */
+.group-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.group-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;background:var(--surface-alt);border-bottom:1px solid var(--border)}
+.group-name-lbl{font-size:13.5px;font-weight:600;color:var(--text);flex:1}
+.profile-row{display:flex;align-items:center;gap:11px;padding:10px 16px;cursor:pointer;transition:background .1s;border-bottom:1px solid var(--border)}
+.profile-row:last-of-type{border-bottom:none}
+.profile-row:hover{background:var(--surface-alt)}
+.profile-row.sel{background:var(--accent-light)}
+.p-avatar{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;font-size:13px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.p-name{font-size:13px;font-weight:500;color:var(--text)}
+.p-role{font-size:11px;color:var(--text-3)}
+.p-active-tag{padding:2px 7px;border-radius:20px;background:var(--accent);color:#fff;font-size:10px;font-weight:600;flex-shrink:0}
+/* FILTER BAR */
+.filter-bar{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.fbtn{padding:4px 12px;border-radius:20px;border:1px solid var(--border);background:none;color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .1s}
+.fbtn:hover{background:var(--surface-alt);color:var(--text)}
+.fbtn.on{background:var(--accent);color:#fff;border-color:transparent}
+/* STATUS SWITCHER */
+.ss-row{display:flex;gap:5px;margin-top:9px;padding-top:9px;border-top:1px solid var(--border)}
+.ss-btn{padding:3px 9px;border-radius:20px;border:1px solid var(--border);background:none;font-size:11px;font-weight:500;cursor:pointer;color:var(--text-2);font-family:var(--sans);transition:all .1s}
+.ss-btn.cur{background:var(--accent-light);color:var(--accent);border-color:transparent}
+/* SETLIST */
+.sl-tabs{display:flex;gap:6px;margin-bottom:14px;padding-bottom:14px;border-bottom:1px solid var(--border)}
+.sl-tab{padding:5px 12px;border-radius:var(--r);border:1px solid var(--border);background:none;color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--sans);transition:all .1s}
+.sl-tab.active{background:var(--accent-light);color:var(--accent);border-color:transparent}
+.sl-item{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);box-shadow:var(--sh)}
+.sl-pos{font-family:var(--mono);font-size:11px;color:var(--text-3);width:18px;text-align:right;flex-shrink:0}
+.sl-note{font-size:11px;color:var(--text-3)}
+.sl-dur{font-family:var(--mono);font-size:11px;color:var(--text-3);flex-shrink:0}
+/* GOALS */
+.goal-item{display:flex;align-items:flex-start;gap:9px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.goal-check{width:15px;height:15px;accent-color:var(--accent);flex-shrink:0;margin-top:3px;cursor:pointer}
+.goal-text{flex:1;font-size:13px;color:var(--text)}
+.goal-text.done{text-decoration:line-through;color:var(--text-3)}
+/* STATS */
+.stats-row{display:flex;gap:20px;flex-wrap:wrap;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:14px 18px;box-shadow:var(--sh);margin-bottom:16px}
+.stat-val{font-family:var(--mono);font-size:22px;font-weight:500;color:var(--text)}
+.stat-lbl{font-size:11px;color:var(--text-3);margin-top:1px}
+/* RECORDING */
+.rec-bar{display:flex;align-items:center;gap:10px;padding:12px 14px;background:var(--surface-alt);border-radius:var(--r);margin-top:10px;flex-wrap:wrap}
+.rec-timer{font-family:var(--mono);font-size:18px;font-weight:500;color:var(--text);min-width:50px}
+.rec-timer.on{color:var(--rec);animation:blink 1s step-end infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.rec-start{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--rec);color:#fff;border:none;border-radius:var(--r);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.rec-start:hover{filter:brightness(.9)}
+.rec-start:disabled{opacity:.4;cursor:default}
+.rec-stop{display:inline-flex;align-items:center;gap:5px;padding:7px 14px;background:var(--surface);color:var(--text-2);border:1px solid var(--border);border-radius:var(--r);font-size:12.5px;font-weight:600;cursor:pointer;font-family:var(--sans)}
+.rec-stop:disabled{opacity:.4;cursor:default}
+.rec-status-lbl{font-size:11.5px;color:var(--text-3);font-style:italic}
+/* AUDIO PLAYER */
+.audio-player{background:var(--surface-alt);border-radius:var(--r);padding:10px 12px;margin-top:8px}
+.audio-seek-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.audio-seek{flex:1;height:4px;cursor:pointer;accent-color:var(--accent)}
+.audio-time{font-family:var(--mono);font-size:11px;color:var(--text-3);flex-shrink:0;min-width:82px;text-align:right}
+.audio-ctl{display:flex;align-items:center;gap:6px}
+.ab{border:none;background:none;cursor:pointer;color:var(--text-2);padding:4px 8px;border-radius:var(--r);font-size:12px;transition:background .1s;font-family:var(--sans)}
+.ab:hover{background:var(--border);color:var(--text)}
+.play-btn{width:32px;height:32px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;font-size:14px;flex-shrink:0;transition:background .1s}
+.play-btn:hover{background:var(--accent-mid)}
+/* METRONOME */
+.metro-wrap{max-width:360px;margin:0 auto}
+.metro-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:24px 20px;box-shadow:var(--sh)}
+.metro-bpm-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:20px}
+.metro-adj{border:1px solid var(--border);background:var(--bg);color:var(--text-2);border-radius:var(--r);padding:7px 10px;font-size:12px;font-family:var(--mono);cursor:pointer;transition:background .1s}
+.metro-adj:hover{background:var(--accent-light);color:var(--accent);border-color:transparent}
+.metro-bpm-center{display:flex;flex-direction:column;align-items:center;min-width:110px}
+.metro-bpm-input{font-family:var(--mono);font-size:48px;font-weight:500;color:var(--text);background:none;border:none;outline:none;text-align:center;width:130px;line-height:1;-moz-appearance:textfield}
+.metro-bpm-input::-webkit-inner-spin-button,.metro-bpm-input::-webkit-outer-spin-button{-webkit-appearance:none}
+.metro-bpm-lbl{font-size:10px;letter-spacing:.1em;color:var(--text-3);margin-top:2px}
+.metro-beats-row{display:flex;justify-content:center;gap:10px;margin-bottom:20px}
+.mb{width:30px;height:30px;border-radius:50%;background:var(--border);transition:background .06s,transform .06s}
+.mb.mb-acc{width:36px;height:36px;margin-top:-3px}
+.mb.mb-on{background:var(--accent);transform:scale(1.12)}
+.mb.mb-on.mb-acc{box-shadow:0 0 0 4px var(--accent-light)}
+.metro-sig-row{display:flex;justify-content:center;gap:6px;margin-bottom:20px}
+.ms-btn{padding:5px 13px;border:1px solid var(--border);border-radius:20px;background:none;color:var(--text-2);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--mono);transition:all .1s}
+.ms-btn.active{background:var(--accent-light);color:var(--accent);border-color:transparent}
+.metro-ctl{display:flex;justify-content:center;align-items:center;gap:16px}
+.metro-tap{padding:12px 20px;border:1px solid var(--border);border-radius:var(--r);background:var(--bg);color:var(--text-2);font-size:14px;font-weight:600;cursor:pointer;font-family:var(--sans);transition:all .1s;user-select:none}
+.metro-tap:active{background:var(--accent-light);color:var(--accent);border-color:transparent;transform:scale(.97)}
+.metro-play{width:58px;height:58px;border-radius:50%;background:var(--accent);color:#fff;border:none;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .1s}
+.metro-play.on{background:var(--danger)}
+/* NO PROFILE */
+.no-prof{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;padding:40px;text-align:center;color:var(--text-3)}
+.no-prof-icon{font-size:36px;margin-bottom:12px}
+/* TOAST */
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--text);color:var(--surface);padding:7px 14px;border-radius:var(--r);font-size:12.5px;opacity:0;transition:opacity .18s,transform .18s;pointer-events:none;z-index:999;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+/* EMPTY */
+.empty{text-align:center;padding:48px 24px;color:var(--text-3)}
+.empty-icon{font-size:30px;margin-bottom:10px}
+.empty-msg{font-size:13px;max-width:240px;margin:0 auto;line-height:1.6}
+/* MOBILE */
+@media(max-width:600px){
+  .tab-btn span:not(.tab-icon){display:none}
+  .tab-btn{padding:8px 10px}
+  .vhead{padding:12px 14px 10px}
+  .vbody{padding:14px}
+  .frow-2,.frow-3{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+
+<header class="top-header">
+  <div class="app-brand">
+    <div class="app-icon">H</div>
+    <div class="app-name">Hall4zik</div>
+  </div>
+  <button class="profile-pill" onclick="go('profiles')" id="activePill">
+    <span id="pillTxt">— Sélectionner un profil</span><span style="font-size:10px;color:var(--text-3)">▾</span>
+  </button>
+  <div class="header-ctl">
+    <button class="lang-btn active" id="btnFR" onclick="setLang('fr')">FR</button>
+    <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    <button class="theme-btn" id="themeBtn" onclick="toggleTheme()">☀️</button>
+  </div>
+</header>
+
+<nav class="tab-bar">
+  <button class="tab-btn active" data-s="profiles"><span class="tab-icon">👥</span><span data-t="nav_profiles">Profils</span></button>
+  <button class="tab-btn" data-s="sessions"><span class="tab-icon">🎙️</span><span data-t="nav_sessions">Session</span></button>
+  <button class="tab-btn" data-s="songs"><span class="tab-icon">🎵</span><span data-t="nav_songs">Morceaux</span></button>
+  <button class="tab-btn" data-s="rehearsals"><span class="tab-icon">🔄</span><span data-t="nav_rehearsals">Répétitions</span></button>
+  <button class="tab-btn" data-s="setlist"><span class="tab-icon">📋</span><span data-t="nav_setlist">Setlist</span></button>
+  <button class="tab-btn" data-s="goals"><span class="tab-icon">🎯</span><span data-t="nav_goals">Objectifs</span></button>
+  <button class="tab-btn" data-s="metro"><span class="tab-icon">🎚️</span><span data-t="nav_metro">Métronome</span></button>
+</nav>
+
+<main class="main">
+
+<!-- PROFILES -->
+<section id="v-profiles" class="view active">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="profiles_title">Groupes & Profils</div><div class="vdesc" data-t="profiles_desc">Sélectionne ou crée un profil</div></div>
+    <button class="btn btn-primary" onclick="tf('newGrpForm')">+ <span data-t="new_group">Groupe</span></button>
+  </div>
+  <div class="vbody">
+    <div id="newGrpForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" data-t="group_form_title">Nouveau groupe</div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_group_name">Nom du groupe</label><input id="gf_name" type="text" placeholder="The Band, Jazz Trio..."></div></div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="tf('newGrpForm')" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" onclick="addGroup()" data-t="save">Créer</button>
+      </div>
+    </div>
+    <div id="groupsList"></div>
+  </div>
+</section>
+
+<!-- SESSIONS ENREGISTREMENT -->
+<section id="v-sessions" class="view">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="sessions_title">Session Enregistrement</div><div class="vdesc" data-t="sessions_desc">Pratique individuelle et audio</div></div>
+    <button class="btn btn-primary" onclick="openSessForm()">+ <span data-t="new_session">Nouvelle</span></button>
+  </div>
+  <div class="vbody">
+    <div id="sForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" id="sFormTitle" data-t="session_form">Enregistrer une session</div>
+      <div class="frow frow-3">
+        <div class="field"><label data-t="f_date">Date</label><input id="s_date" type="date"></div>
+        <div class="field"><label data-t="f_duration">Durée (min)</label><input id="s_dur" type="number" min="1" placeholder="60"></div>
+        <div class="field"><label data-t="f_bpm">BPM</label><input id="s_bpm" type="number" placeholder="120"></div>
+      </div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_exercises">Exercices / Contenu</label><textarea id="s_exo" placeholder="Rudiments, gammes, morceau..."></textarea></div></div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_notes">Notes</label><textarea id="s_notes" placeholder="Ce qui a fonctionné, à retravailler..."></textarea></div></div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="cancelSessForm()" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" id="sSaveBtn" onclick="saveSession()" data-t="save">Enregistrer</button>
+      </div>
+    </div>
+    <div id="sStats" style="display:none"></div>
+    <div id="sList" class="elist"></div>
+  </div>
+</section>
+
+<!-- MORCEAUX -->
+<section id="v-songs" class="view">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="songs_title">Morceaux</div><div class="vdesc" data-t="songs_desc">Suivi et composition</div></div>
+    <button class="btn btn-primary" onclick="openSongForm()">+ <span data-t="new_song">Nouveau</span></button>
+  </div>
+  <div class="vbody">
+    <div id="sgForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" id="sgFormTitle" data-t="song_form">Ajouter un morceau</div>
+      <div class="frow frow-2">
+        <div class="field"><label data-t="f_title">Titre</label><input id="sg_title" type="text"></div>
+        <div class="field"><label data-t="f_style">Style / Influence</label><input id="sg_style" type="text" placeholder="Rock, Jazz..."></div>
+      </div>
+      <div class="frow frow-2">
+        <div class="field"><label data-t="f_tempo">Tempo (BPM)</label><input id="sg_tempo" type="number" min="20" max="300" placeholder="120"></div>
+        <div class="field"><label data-t="f_status">Statut</label>
+          <select id="sg_status">
+            <option value="writing" data-t="st_writing">Écriture</option>
+            <option value="rehearsal" data-t="st_rehearsal">Répétition</option>
+            <option value="ready" data-t="st_ready">Prêt concert</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_structure">Structure</label><input id="sg_struct" type="text" placeholder="Intro / Couplet / Refrain / Outro"></div></div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_notes">Notes / Idées</label><textarea id="sg_notes" placeholder="Arrangements, parties à travailler..."></textarea></div></div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="cancelSongForm()" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" id="sgSaveBtn" onclick="saveSong()" data-t="save">Enregistrer</button>
+      </div>
+    </div>
+    <div class="filter-bar" id="songFilter"></div>
+    <div id="sgList" class="elist"></div>
+  </div>
+</section>
+
+<!-- RÉPÉTITIONS -->
+<section id="v-rehearsals" class="view">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="rehearsals_title">Répétitions</div><div class="vdesc" data-t="rehearsals_desc">Sessions de groupe</div></div>
+    <button class="btn btn-primary" onclick="tf('rForm')">+ <span data-t="new_rehearsal">Nouvelle</span></button>
+  </div>
+  <div class="vbody">
+    <div id="rForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" data-t="rehearsal_form">Enregistrer une répétition</div>
+      <div class="frow frow-2">
+        <div class="field"><label data-t="f_date">Date</label><input id="r_date" type="date"></div>
+        <div class="field"><label data-t="f_duration">Durée (min)</label><input id="r_dur" type="number" placeholder="120"></div>
+      </div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_members">Membres présents</label><input id="r_members" type="text" placeholder="Batterie, Guitare, Basse..."></div></div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_songs_worked">Morceaux travaillés</label><textarea id="r_songs" placeholder="Titre — point travaillé..."></textarea></div></div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_decisions">Décisions</label><textarea id="r_decisions" placeholder="Changements, arrangements..."></textarea></div></div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_todo">À travailler avant la prochaine répét</label><textarea id="r_todo" placeholder="Points à préparer en solo..."></textarea></div></div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="tf('rForm')" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" onclick="addRehearsal()" data-t="save">Enregistrer</button>
+      </div>
+    </div>
+    <div id="rList" class="elist"></div>
+  </div>
+</section>
+
+<!-- SETLIST -->
+<section id="v-setlist" class="view">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="setlist_title">Setlist</div><div class="vdesc" id="slDesc" data-t="setlist_desc">Programme du concert</div></div>
+    <button class="btn btn-primary" onclick="openSlForm()">+ <span data-t="add_setlist">Ajouter</span></button>
+  </div>
+  <div class="vbody">
+    <div id="slForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" data-t="setlist_form">Ajouter un morceau</div>
+      <div class="sl-tabs">
+        <button class="sl-tab active" id="slTabPick" onclick="slMode('pick')" data-t="sl_from_songs">Depuis mes morceaux</button>
+        <button class="sl-tab" id="slTabNew" onclick="slMode('new')" data-t="sl_free">Morceau libre</button>
+      </div>
+      <div id="slPickRow" class="frow frow-1"><div class="field"><label data-t="sl_pick_label">Choisir</label><select id="sl_pick" onchange="slPickSong()"></select></div></div>
+      <div class="frow frow-3">
+        <div class="field"><label data-t="f_title">Titre</label><input id="sl_title" type="text"></div>
+        <div class="field"><label>BPM</label><input id="sl_bpm" type="number" placeholder="120"></div>
+        <div class="field"><label data-t="f_duration_min">Durée (min)</label><input id="sl_dur" type="number" step="0.5" placeholder="4"></div>
+      </div>
+      <div class="frow frow-1"><div class="field"><label data-t="f_transition">Transition</label><input id="sl_note" type="text" placeholder="Pause, réaccordage..."></div></div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="closeSlForm()" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" onclick="addSetlist()" data-t="save">Ajouter</button>
+      </div>
+    </div>
+    <div id="slList" class="elist"></div>
+  </div>
+</section>
+
+<!-- OBJECTIFS -->
+<section id="v-goals" class="view">
+  <div class="vhead">
+    <div><div class="vtitle" data-t="goals_title">Objectifs</div><div class="vdesc" data-t="goals_desc">Court et moyen terme</div></div>
+    <button class="btn btn-primary" onclick="tf('gForm')">+ <span data-t="new_goal">Objectif</span></button>
+  </div>
+  <div class="vbody">
+    <div id="gForm" class="fpanel" style="display:none">
+      <div class="fpanel-title" data-t="goal_form">Ajouter un objectif</div>
+      <div class="frow frow-2">
+        <div class="field"><label data-t="f_goal">Objectif</label><input id="g_text" type="text" placeholder="Ex. Paradiddle à 140 BPM"></div>
+        <div class="field"><label data-t="f_horizon">Horizon</label>
+          <select id="g_horizon">
+            <option value="court" data-t="hz_short">Court terme (&lt; 1 mois)</option>
+            <option value="moyen" data-t="hz_medium">Moyen terme (1–6 mois)</option>
+            <option value="long" data-t="hz_long">Long terme (&gt; 6 mois)</option>
+          </select>
+        </div>
+      </div>
+      <div class="factions">
+        <button class="btn btn-ghost" onclick="tf('gForm')" data-t="cancel">Annuler</button>
+        <button class="btn btn-primary" onclick="addGoal()" data-t="save">Enregistrer</button>
+      </div>
+    </div>
+    <div id="gSections"></div>
+  </div>
+</section>
+
+<!-- MÉTRONOME -->
+<section id="v-metro" class="view">
+  <div class="vhead"><div><div class="vtitle" data-t="metro_title">Métronome</div><div class="vdesc" data-t="metro_desc">Tempo et pulsation</div></div></div>
+  <div class="vbody">
+    <div class="metro-wrap">
+      <div class="metro-card">
+        <div class="metro-bpm-row">
+          <button class="metro-adj" onclick="adjBpm(-10)">−10</button>
+          <button class="metro-adj" onclick="adjBpm(-1)">−1</button>
+          <div class="metro-bpm-center">
+            <input class="metro-bpm-input" id="metroBpm" type="number" min="20" max="300" value="120" oninput="setBpm(this.value)">
+            <div class="metro-bpm-lbl">BPM</div>
+          </div>
+          <button class="metro-adj" onclick="adjBpm(+1)">+1</button>
+          <button class="metro-adj" onclick="adjBpm(+10)">+10</button>
+        </div>
+        <div class="metro-beats-row" id="metroBeats"></div>
+        <div class="metro-sig-row">
+          <button class="ms-btn" onclick="setBeats(2)" data-beats="2">2/4</button>
+          <button class="ms-btn" onclick="setBeats(3)" data-beats="3">3/4</button>
+          <button class="ms-btn active" onclick="setBeats(4)" data-beats="4">4/4</button>
+          <button class="ms-btn" onclick="setBeats(6)" data-beats="6">6/8</button>
+        </div>
+        <div class="metro-ctl">
+          <button class="metro-tap" onclick="tapTempo()" data-t="metro_tap">Tap</button>
+          <button class="metro-play" id="metroPlay" onclick="toggleMetro()">▶</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<audio id="audioEl" style="display:none"></audio>
+
+<script>
+// ===== TRANSLATIONS =====
+const TR={fr:{
+  nav_profiles:'Profils',nav_sessions:'Session',nav_songs:'Morceaux',nav_rehearsals:'Répétitions',nav_setlist:'Setlist',nav_goals:'Objectifs',nav_metro:'Métronome',
+  profiles_title:'Groupes & Profils',profiles_desc:'Sélectionne ou crée un profil',
+  new_group:'Groupe',group_form_title:'Nouveau groupe',f_group_name:'Nom du groupe',
+  new_profile:'Profil',f_name:'Nom / Pseudo',f_instrument:'Instrument',f_level:'Niveau',f_styles:'Styles',
+  lv_1:'Débutant',lv_2:'Intermédiaire',lv_3:'Confirmé',
+  no_groups:'Crée un groupe pour commencer.',no_profile_msg:'Sélectionne un profil dans l\'onglet Profils.',
+  active_lbl:'Actif',
+  sessions_title:'Session Enregistrement',sessions_desc:'Pratique individuelle et audio',
+  new_session:'Nouvelle',session_form:'Enregistrer une session',session_edit:'Modifier la session',
+  f_date:'Date',f_duration:'Durée (min)',f_bpm:'BPM',f_exercises:'Exercices / Contenu',f_notes:'Notes',
+  stat_sessions:'sessions',stat_h:'h de pratique',
+  rec_start:'● Enregistrer',rec_stop:'■ Arrêter',rec_ready:'Prêt',rec_recording:'Enregistrement...',rec_done:'Terminé',rec_no_mic:'Microphone non disponible.',
+  recordings_lbl:'Enregistrements',rec_take:'Prise',
+  sessions_empty:'Aucune session.',
+  songs_title:'Morceaux',songs_desc:'Suivi et composition',new_song:'Nouveau',song_form:'Ajouter un morceau',song_edit:'Modifier le morceau',
+  f_title:'Titre',f_style:'Style / Influence',f_tempo:'Tempo (BPM)',f_status:'Statut',f_structure:'Structure',
+  st_writing:'Écriture',st_rehearsal:'Répétition',st_ready:'Prêt concert',filter_all:'Tous',
+  songs_empty:'Aucun morceau.',add_to_sl:'→ Setlist',
+  rehearsals_title:'Répétitions',rehearsals_desc:'Sessions de groupe',new_rehearsal:'Nouvelle',rehearsal_form:'Enregistrer une répétition',
+  f_members:'Membres présents',f_songs_worked:'Morceaux travaillés',f_decisions:'Décisions',f_todo:'À travailler avant la prochaine répét',
+  rehearsals_empty:'Aucune répétition.',
+  setlist_title:'Setlist',setlist_desc:'Programme du concert',add_setlist:'Ajouter',setlist_form:'Ajouter un morceau',
+  sl_from_songs:'Depuis mes morceaux',sl_free:'Morceau libre',sl_pick_label:'Choisir',sl_no_songs_opt:'Aucun morceau créé',
+  f_duration_min:'Durée (min)',f_transition:'Transition',setlist_empty:'Setlist vide.',setlist_total:'Durée totale :',
+  goals_title:'Objectifs',goals_desc:'Court et moyen terme',new_goal:'Objectif',goal_form:'Ajouter un objectif',
+  f_goal:'Objectif',f_horizon:'Horizon',
+  hz_short:'Court terme (< 1 mois)',hz_medium:'Moyen terme (1–6 mois)',hz_long:'Long terme (> 6 mois)',
+  hz_short_lbl:'Court terme',hz_medium_lbl:'Moyen terme',hz_long_lbl:'Long terme',
+  goals_empty:'Aucun objectif.',
+  metro_title:'Métronome',metro_desc:'Tempo et pulsation',metro_tap:'Tap',
+  cancel:'Annuler',save:'Enregistrer',update:'Mettre à jour',
+  saved:'Enregistré ✓',deleted:'Supprimé',min:'min',
+},en:{
+  nav_profiles:'Profiles',nav_sessions:'Session',nav_songs:'Songs',nav_rehearsals:'Rehearsals',nav_setlist:'Setlist',nav_goals:'Goals',nav_metro:'Metronome',
+  profiles_title:'Groups & Profiles',profiles_desc:'Select or create a profile',
+  new_group:'Group',group_form_title:'New group',f_group_name:'Group name',
+  new_profile:'Profile',f_name:'Name / Alias',f_instrument:'Instrument',f_level:'Level',f_styles:'Styles',
+  lv_1:'Beginner',lv_2:'Intermediate',lv_3:'Advanced',
+  no_groups:'Create a group to get started.',no_profile_msg:'Select a profile in the Profiles tab.',
+  active_lbl:'Active',
+  sessions_title:'Recording Session',sessions_desc:'Individual practice and audio',
+  new_session:'New',session_form:'Log a session',session_edit:'Edit session',
+  f_date:'Date',f_duration:'Duration (min)',f_bpm:'BPM',f_exercises:'Exercises / Content',f_notes:'Notes',
+  stat_sessions:'sessions',stat_h:'h of practice',
+  rec_start:'● Record',rec_stop:'■ Stop',rec_ready:'Ready',rec_recording:'Recording...',rec_done:'Done',rec_no_mic:'Microphone unavailable.',
+  recordings_lbl:'Recordings',rec_take:'Take',
+  sessions_empty:'No sessions logged.',
+  songs_title:'Songs',songs_desc:'Tracking & composition',new_song:'New',song_form:'Add a song',song_edit:'Edit song',
+  f_title:'Title',f_style:'Style / Influence',f_tempo:'Tempo (BPM)',f_status:'Status',f_structure:'Structure',
+  st_writing:'Writing',st_rehearsal:'Rehearsal',st_ready:'Concert ready',filter_all:'All',
+  songs_empty:'No songs yet.',add_to_sl:'→ Setlist',
+  rehearsals_title:'Rehearsals',rehearsals_desc:'Group sessions',new_rehearsal:'New',rehearsal_form:'Log a rehearsal',
+  f_members:'Members present',f_songs_worked:'Songs worked on',f_decisions:'Decisions',f_todo:'To work on before next rehearsal',
+  rehearsals_empty:'No rehearsals logged.',
+  setlist_title:'Setlist',setlist_desc:'Show order',add_setlist:'Add',setlist_form:'Add a song',
+  sl_from_songs:'From my songs',sl_free:'Manual entry',sl_pick_label:'Select',sl_no_songs_opt:'No songs created',
+  f_duration_min:'Duration (min)',f_transition:'Transition',setlist_empty:'Empty setlist.',setlist_total:'Total:',
+  goals_title:'Goals',goals_desc:'Short and medium term',new_goal:'Goal',goal_form:'Add a goal',
+  f_goal:'Goal',f_horizon:'Horizon',
+  hz_short:'Short term (< 1 month)',hz_medium:'Medium term (1–6 months)',hz_long:'Long term (> 6 months)',
+  hz_short_lbl:'Short term',hz_medium_lbl:'Medium term',hz_long_lbl:'Long term',
+  goals_empty:'No goals defined.',
+  metro_title:'Metronome',metro_desc:'Tempo & beat',metro_tap:'Tap',
+  cancel:'Cancel',save:'Save',update:'Update',
+  saved:'Saved ✓',deleted:'Deleted',min:'min',
+}};
+
+// ===== STATE =====
+let lang=localStorage.getItem('h4z_lang')||'fr';
+let theme=localStorage.getItem('h4z_theme')||'auto';
+let songFilter='all';
+let APP=loadApp();
+function loadApp(){try{const s=localStorage.getItem('hall4zik_v2');if(s)return JSON.parse(s);}catch(e){}return{groups:[],profiles:{},data:{},activeGroupId:null,activeProfileId:null};}
+function saveApp(){localStorage.setItem('hall4zik_v2',JSON.stringify(APP));}
+function pd(){const pid=APP.activeProfileId;if(!pid)return null;if(!APP.data[pid])APP.data[pid]={sessions:[],songs:[],rehearsals:[],setlist:[],goals:[]};return APP.data[pid];}
+function needProf(el){if(!pd()){el.innerHTML='<div class="no-prof"><div class="no-prof-icon">👤</div><div>'+t('no_profile_msg')+'</div></div>';return false;}return true;}
+
+// ===== THEME =====
+function applyTheme(){const dark=theme==='dark'||(theme==='auto'&&matchMedia('(prefers-color-scheme:dark)').matches);document.documentElement.setAttribute('data-theme',dark?'dark':'light');document.getElementById('themeBtn').textContent=dark?'☀️':'🌙';}
+function toggleTheme(){const dark=document.documentElement.getAttribute('data-theme')==='dark';theme=dark?'light':'dark';localStorage.setItem('h4z_theme',theme);applyTheme();}
+applyTheme();
+
+// ===== I18N =====
+const t=k=>TR[lang][k]||k;
+function applyLang(){
+  document.querySelectorAll('[data-t]').forEach(el=>{const k=el.getAttribute('data-t');if(TR[lang][k])el.textContent=TR[lang][k];});
+  document.getElementById('btnFR').classList.toggle('active',lang==='fr');
+  document.getElementById('btnEN').classList.toggle('active',lang==='en');
+  renderAll();
+}
+function setLang(l){lang=l;localStorage.setItem('h4z_lang',l);applyLang();}
+
+// ===== NAV =====
+function go(s){document.querySelectorAll('[data-s]').forEach(b=>b.classList.toggle('active',b.dataset.s===s));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('active',v.id==='v-'+s));}
+document.querySelectorAll('[data-s]').forEach(b=>b.addEventListener('click',()=>go(b.dataset.s)));
+function tf(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
+
+// ===== GROUPS & PROFILES =====
+function addGroup(){const name=v('gf_name');if(!name)return;const id=Date.now();APP.groups.push({id,name});APP.profiles[id]=[];saveApp();clear('gf_name');tf('newGrpForm');renderGroups();toast(t('saved'));}
+function delGroup(id){
+  APP.groups=APP.groups.filter(g=>g.id!==id);
+  (APP.profiles[id]||[]).forEach(p=>{delete APP.data[p.id];});
+  delete APP.profiles[id];
+  if(APP.activeGroupId===id){APP.activeGroupId=null;APP.activeProfileId=null;}
+  saveApp();renderGroups();updatePill();
+}
+function addProfile(gid){
+  const name=v('pf_n_'+gid);if(!name)return;
+  const id=Date.now();
+  (APP.profiles[gid]=APP.profiles[gid]||[]).push({id,name,instrument:v('pf_i_'+gid),level:v('pf_l_'+gid),styles:v('pf_s_'+gid)});
+  saveApp();['pf_n_','pf_i_','pf_l_','pf_s_'].forEach(p=>clear(p+gid));
+  document.getElementById('pf_form_'+gid).style.display='none';
+  renderGroups();toast(t('saved'));
+}
+function delProfile(gid,pid){
+  APP.profiles[gid]=(APP.profiles[gid]||[]).filter(p=>p.id!==pid);
+  delete APP.data[pid];
+  if(APP.activeProfileId===pid){APP.activeProfileId=null;APP.activeGroupId=null;}
+  saveApp();renderGroups();updatePill();
+}
+function selProfile(gid,pid){APP.activeGroupId=gid;APP.activeProfileId=pid;saveApp();renderGroups();updatePill();toast(t('active_lbl')+' ✓');}
+function updatePill(){
+  const pid=APP.activeProfileId,gid=APP.activeGroupId;
+  const el=document.getElementById('pillTxt');
+  if(!pid){el.textContent=lang==='fr'?'— Sélectionner un profil':'— Select a profile';return;}
+  const g=APP.groups.find(g=>g.id===gid),p=(APP.profiles[gid]||[]).find(p=>p.id===pid);
+  el.textContent=g&&p?`${g.name} › ${p.name}`:'—';
+}
+function renderGroups(){
+  const el=document.getElementById('groupsList');
+  if(!APP.groups.length){el.innerHTML=`<div class="empty"><div class="empty-icon">🎸</div><div class="empty-msg">${t('no_groups')}</div></div>`;return;}
+  const lvM={debutant:t('lv_1'),intermediaire:t('lv_2'),confirme:t('lv_3'),expert:'Expert'};
+  el.innerHTML=APP.groups.map(g=>{
+    const profs=APP.profiles[g.id]||[];
+    return`<div class="group-card">
+      <div class="group-hd">
+        <span class="group-name-lbl">🎸 ${x(g.name)}</span>
+        <button class="btn btn-ghost" style="font-size:11px;padding:3px 8px" onclick="document.getElementById('pf_form_${g.id}').style.display=document.getElementById('pf_form_${g.id}').style.display==='none'?'block':'none'">+ ${t('new_profile')}</button>
+        <button class="act-btn" onclick="delGroup(${g.id})">✕</button>
+      </div>
+      <div id="pf_form_${g.id}" style="display:none;padding:14px;border-bottom:1px solid var(--border);background:var(--bg)">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+          <div class="field"><label>${t('f_name')}</label><input id="pf_n_${g.id}" type="text" placeholder="Philippe"></div>
+          <div class="field"><label>${t('f_instrument')}</label><input id="pf_i_${g.id}" type="text" placeholder="Batterie"></div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="field"><label>${t('f_level')}</label>
+            <select id="pf_l_${g.id}"><option value="">—</option><option value="debutant">${t('lv_1')}</option><option value="intermediaire">${t('lv_2')}</option><option value="confirme">${t('lv_3')}</option><option value="expert">Expert</option></select>
+          </div>
+          <div class="field"><label>${t('f_styles')}</label><input id="pf_s_${g.id}" type="text" placeholder="Rock, Jazz..."></div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:8px">
+          <button class="btn btn-ghost" onclick="document.getElementById('pf_form_${g.id}').style.display='none'">${t('cancel')}</button>
+          <button class="btn btn-primary" onclick="addProfile(${g.id})">${t('save')}</button>
+        </div>
+      </div>
+      ${profs.length?profs.map(p=>{
+        const active=APP.activeProfileId===p.id;
+        return`<div class="profile-row${active?' sel':''}" onclick="selProfile(${g.id},${p.id})">
+          <div class="p-avatar">${x((p.name[0]||'?').toUpperCase())}</div>
+          <div style="flex:1"><div class="p-name">${x(p.name)}</div><div class="p-role">${p.instrument?x(p.instrument):''}${p.level?' · '+lvM[p.level]:''}${p.styles?' · '+x(p.styles):''}</div></div>
+          ${active?`<span class="p-active-tag">${t('active_lbl')}</span>`:''}
+          <button class="act-btn" onclick="event.stopPropagation();delProfile(${g.id},${p.id})">✕</button>
+        </div>`;
+      }).join(''):`<div style="padding:12px 16px;color:var(--text-3);font-size:12.5px">Pas encore de profil.</div>`}
+    </div>`;
+  }).join('');
+}
+
+// ===== AUDIO =====
+let recSt={mr:null,stream:null,chunks:[],t0:null,timer:null,dur:0,sessId:null};
+let nowPlaying={blobId:null,url:null};
+let audioDB=null;
+async function getDB(){if(audioDB)return audioDB;return new Promise((r,j)=>{const q=indexedDB.open('h4z_audio',1);q.onupgradeneeded=e=>e.target.result.createObjectStore('recs',{keyPath:'id'});q.onsuccess=e=>{audioDB=e.target.result;r(audioDB)};q.onerror=j});}
+async function dbSave(id,blob){const db=await getDB();return new Promise((r,j)=>{const tx=db.transaction('recs','readwrite');tx.objectStore('recs').put({id,blob});tx.oncomplete=r;tx.onerror=j});}
+async function dbLoad(id){const db=await getDB();return new Promise((r,j)=>{const tx=db.transaction('recs','readonly');const q=tx.objectStore('recs').get(id);q.onsuccess=()=>r(q.result?.blob||null);q.onerror=j});}
+async function dbDel(id){const db=await getDB();return new Promise((r,j)=>{const tx=db.transaction('recs','readwrite');tx.objectStore('recs').delete(id);tx.oncomplete=r;tx.onerror=j});}
+function tStr(s){if(!s||!isFinite(s))return'0:00';return`${Math.floor(s/60)}:${Math.floor(s%60).toString().padStart(2,'0')}`;}
+async function startRec(sid){
+  try{
+    const stream=await navigator.mediaDevices.getUserMedia({audio:true});
+    recSt={mr:new MediaRecorder(stream),stream,chunks:[],t0:Date.now(),timer:null,dur:0,sessId:sid};
+    recSt.mr.ondataavailable=e=>{if(e.data.size>0)recSt.chunks.push(e.data);};
+    recSt.mr.start(100);
+    recSt.timer=setInterval(()=>{
+      recSt.dur=Math.floor((Date.now()-recSt.t0)/1000);
+      const el=document.getElementById('rTimer_'+sid);
+      if(el)el.textContent=tStr(recSt.dur);
+    },1000);
+    renderSessions();
+  }catch(e){toast(t('rec_no_mic'));}
+}
+async function stopRec(sid){
+  if(!recSt.mr||recSt.mr.state==='inactive')return;
+  recSt.mr.stop();recSt.stream.getTracks().forEach(t=>t.stop());clearInterval(recSt.timer);
+  await new Promise(r=>{recSt.mr.onstop=r;});
+  const blob=new Blob(recSt.chunks,{type:'audio/webm'});
+  const blobId='rec_'+Date.now();
+  try{
+    await dbSave(blobId,blob);
+    const D=pd();const sess=D?.sessions?.find(s=>s.id===sid);
+    if(sess){if(!sess.recs)sess.recs=[];sess.recs.push({blobId,date:new Date().toISOString().split('T')[0],dur:recSt.dur,name:t('rec_take')+' '+(sess.recs.length+1)});}
+    saveApp();
+  }catch(e){toast('Erreur audio');}
+  recSt={mr:null,stream:null,chunks:[],t0:null,timer:null,dur:0,sessId:null};
+  renderSessions();
+}
+async function playRec(blobId){
+  const audioEl=document.getElementById('audioEl');
+  if(nowPlaying.blobId===blobId&&!audioEl.paused){audioEl.pause();setPlayBtn(blobId,false);return;}
+  const blob=await dbLoad(blobId);
+  if(!blob){toast('Audio introuvable');return;}
+  if(nowPlaying.url)URL.revokeObjectURL(nowPlaying.url);
+  const url=URL.createObjectURL(blob);
+  nowPlaying={blobId,url};audioEl.src=url;
+  const sk=document.getElementById('sk_'+blobId),tm=document.getElementById('tm_'+blobId);
+  audioEl.ontimeupdate=()=>{if(sk)sk.value=audioEl.currentTime;if(tm)tm.textContent=tStr(audioEl.currentTime)+' / '+tStr(audioEl.duration);};
+  audioEl.onloadedmetadata=()=>{if(sk){sk.max=audioEl.duration;sk.value=0;}if(tm)tm.textContent='0:00 / '+tStr(audioEl.duration);};
+  audioEl.onended=()=>setPlayBtn(blobId,false);
+  audioEl.play();setPlayBtn(blobId,true);
+}
+function setPlayBtn(bId,pl){const b=document.getElementById('pb_'+bId);if(b)b.textContent=pl?'⏸':'▶';}
+function seekRec(bId,val){const a=document.getElementById('audioEl');if(nowPlaying.blobId===bId)a.currentTime=parseFloat(val);}
+function skipRec(bId,d){const a=document.getElementById('audioEl');if(nowPlaying.blobId===bId)a.currentTime=Math.max(0,Math.min(a.duration||0,a.currentTime+d));}
+async function delRec(sid,bId,i){await dbDel(bId);const D=pd();const s=D?.sessions?.find(s=>s.id===sid);if(s?.recs){s.recs.splice(i,1);saveApp();}renderSessions();}
+
+// ===== SESSIONS =====
+let editSessId=null;
+function openSessForm(){editSessId=null;document.getElementById('sFormTitle').textContent=t('session_form');document.getElementById('sSaveBtn').textContent=t('save');document.getElementById('sForm').style.display='block';}
+function cancelSessForm(){['s_date','s_dur','s_bpm','s_exo','s_notes'].forEach(clear);editSessId=null;document.getElementById('sForm').style.display='none';}
+function editSess(id){const D=pd();if(!D)return;const e=D.sessions.find(s=>s.id===id);if(!e)return;editSessId=id;document.getElementById('s_date').value=e.date||'';document.getElementById('s_dur').value=e.dur||'';document.getElementById('s_bpm').value=e.bpm||'';document.getElementById('s_exo').value=e.exo||'';document.getElementById('s_notes').value=e.notes||'';document.getElementById('sFormTitle').textContent=t('session_edit');document.getElementById('sSaveBtn').textContent=t('update');document.getElementById('sForm').style.display='block';document.getElementById('sForm').scrollIntoView({behavior:'smooth',block:'nearest'});}
+function saveSession(){
+  const D=pd();if(!D){toast(t('no_profile_msg'));return;}
+  const f={date:v('s_date'),dur:parseInt(v('s_dur'))||0,bpm:v('s_bpm'),exo:v('s_exo'),notes:v('s_notes')};
+  if(!f.date)return;
+  if(editSessId){const i=D.sessions.findIndex(s=>s.id===editSessId);if(i>-1)D.sessions[i]={...D.sessions[i],...f};}
+  else D.sessions.unshift({id:Date.now(),recs:[],...f});
+  saveApp();cancelSessForm();renderSessions();toast(t('saved'));
+}
+function delSess(id){const D=pd();if(!D)return;const s=D.sessions.find(e=>e.id===id);if(s?.recs)s.recs.forEach(r=>dbDel(r.blobId));D.sessions=D.sessions.filter(s=>s.id!==id);saveApp();renderSessions();toast(t('deleted'));}
+function renderSessions(){
+  const el=document.getElementById('sList'),st=document.getElementById('sStats');
+  if(!needProf(el)){st.style.display='none';return;}
+  const D=pd();
+  if(!D.sessions.length){el.innerHTML=empty('🎙️','sessions_empty');st.style.display='none';return;}
+  const tot=D.sessions.reduce((s,e)=>s+(e.dur||0),0);
+  st.style.display='block';st.innerHTML=`<div class="stats-row"><div><div class="stat-val">${D.sessions.length}</div><div class="stat-lbl">${t('stat_sessions')}</div></div><div><div class="stat-val">${(tot/60).toFixed(1)}</div><div class="stat-lbl">${t('stat_h')}</div></div></div>`;
+  const isRec=sid=>recSt.mr&&recSt.mr.state!=='inactive'&&recSt.sessId===sid;
+  el.innerHTML=D.sessions.map(e=>`
+    <div class="ecard">
+      <div class="ehead">
+        <div><div class="etitle">${e.date?fd(e.date):'—'}</div><div class="emeta">${e.dur?e.dur+' min':''}${e.bpm?' · '+e.bpm+' BPM':''}</div></div>
+        <div class="eactions"><button class="act-btn" onclick="editSess(${e.id})">✏️</button><button class="act-btn" onclick="delSess(${e.id})">✕</button></div>
+      </div>
+      ${e.exo?`<div class="divl"></div><div class="ebody">${x(e.exo)}</div>`:''}
+      ${e.notes?`<div class="ebody" style="color:var(--text-3);font-style:italic">${x(e.notes)}</div>`:''}
+      <div class="rec-bar">
+        <div class="rec-timer${isRec(e.id)?' on':''}" id="rTimer_${e.id}">${isRec(e.id)?tStr(recSt.dur):'0:00'}</div>
+        <button class="rec-start" id="rStart_${e.id}" onclick="startRec(${e.id})" ${isRec(e.id)?'disabled':''} data-t="rec_start">${t('rec_start')}</button>
+        <button class="rec-stop" id="rStop_${e.id}" onclick="stopRec(${e.id})" ${!isRec(e.id)?'disabled':''} data-t="rec_stop">${t('rec_stop')}</button>
+        <span class="rec-status-lbl">${isRec(e.id)?t('rec_recording'):t('rec_ready')}</span>
+      </div>
+      ${(e.recs||[]).length?`<div style="margin-top:8px"><div class="sub-label">${t('recordings_lbl')}</div>${(e.recs||[]).map((r,i)=>`
+        <div class="ecard" style="margin-top:6px;padding:10px 12px">
+          <div class="ehead"><div class="etitle" style="font-size:12px">${x(r.name)} · ${r.date?fd(r.date):'—'} · ${tStr(r.dur||0)}</div><button class="act-btn" onclick="delRec(${e.id},'${r.blobId}',${i})">✕</button></div>
+          <div class="audio-player">
+            <div class="audio-seek-row"><input type="range" class="audio-seek" id="sk_${r.blobId}" value="0" min="0" step="0.1" oninput="seekRec('${r.blobId}',this.value)"><span class="audio-time" id="tm_${r.blobId}">0:00 / —</span></div>
+            <div class="audio-ctl"><button class="ab" onclick="skipRec('${r.blobId}',-10)">⏮ 10s</button><button class="play-btn" id="pb_${r.blobId}" onclick="playRec('${r.blobId}')">▶</button><button class="ab" onclick="skipRec('${r.blobId}',10)">10s ⏭</button></div>
+          </div>
+        </div>`).join('')}</div>`:''}
+    </div>`).join('');
+}
+
+// ===== SONGS =====
+let editSongId=null;
+function openSongForm(){editSongId=null;document.getElementById('sgFormTitle').textContent=t('song_form');document.getElementById('sgSaveBtn').textContent=t('save');document.getElementById('sgForm').style.display='block';}
+function cancelSongForm(){['sg_title','sg_style','sg_tempo','sg_struct','sg_notes'].forEach(clear);document.getElementById('sg_status').value='writing';editSongId=null;document.getElementById('sgForm').style.display='none';}
+function editSong(id){const D=pd();if(!D)return;const e=D.songs.find(s=>s.id===id);if(!e)return;editSongId=id;document.getElementById('sg_title').value=e.title||'';document.getElementById('sg_style').value=e.style||'';document.getElementById('sg_tempo').value=e.tempo||'';document.getElementById('sg_status').value=e.status||'writing';document.getElementById('sg_struct').value=e.struct||'';document.getElementById('sg_notes').value=e.notes||'';document.getElementById('sgFormTitle').textContent=t('song_edit');document.getElementById('sgSaveBtn').textContent=t('update');const f=document.getElementById('sgForm');f.style.display='block';f.scrollIntoView({behavior:'smooth',block:'nearest'});}
+function saveSong(){const D=pd();if(!D){toast(t('no_profile_msg'));return;}const f={title:v('sg_title'),style:v('sg_style'),tempo:v('sg_tempo'),status:v('sg_status'),struct:v('sg_struct'),notes:v('sg_notes')};if(!f.title)return;if(editSongId){const i=D.songs.findIndex(s=>s.id===editSongId);if(i>-1)D.songs[i]={...D.songs[i],...f};}else D.songs.unshift({id:Date.now(),...f});saveApp();cancelSongForm();renderSongs();toast(t('saved'));}
+function delSong(id){const D=pd();if(!D)return;D.songs=D.songs.filter(s=>s.id!==id);saveApp();renderSongs();toast(t('deleted'));}
+function setSongStatus(id,s){const D=pd();if(!D)return;const e=D.songs.find(e=>e.id===id);if(e){e.status=s;saveApp();renderSongs();}}
+function sBadge(s){if(s==='writing')return`<span class="badge b-wr">● ${t('st_writing')}</span>`;if(s==='rehearsal')return`<span class="badge b-rh">● ${t('st_rehearsal')}</span>`;return`<span class="badge b-rd">● ${t('st_ready')}</span>`;}
+function setSongFilter(f){songFilter=f;renderSongs();}
+function renderSongs(){
+  const el=document.getElementById('sgList'),fb=document.getElementById('songFilter');
+  fb.innerHTML=['all','writing','rehearsal','ready'].map(s=>`<button class="fbtn${songFilter===s?' on':''}" onclick="setSongFilter('${s}')">${s==='all'?t('filter_all'):s==='writing'?t('st_writing'):s==='rehearsal'?t('st_rehearsal'):t('st_ready')}</button>`).join('');
+  if(!needProf(el))return;
+  const D=pd();const list=songFilter==='all'?D.songs:D.songs.filter(s=>s.status===songFilter);
+  if(!list.length){el.innerHTML=empty('🎵','songs_empty');return;}
+  el.innerHTML=list.map(e=>`
+    <div class="ecard">
+      <div class="ehead">
+        <div><div class="etitle">${x(e.title)}</div><div class="emeta">${e.style?x(e.style):''}${e.tempo?' · '+e.tempo+' BPM':''}</div></div>
+        <div class="eactions">${sBadge(e.status)}<button class="act-btn to-sl" onclick="quickAddToSetlist(${e.id})">${t('add_to_sl')}</button><button class="act-btn" onclick="editSong(${e.id})">✏️</button><button class="act-btn" onclick="delSong(${e.id})">✕</button></div>
+      </div>
+      ${e.struct?`<div class="emeta" style="margin-top:5px;color:var(--text-2)">${x(e.struct)}</div>`:''}
+      ${e.notes?`<div class="divl"></div><div class="ebody">${x(e.notes)}</div>`:''}
+      <div class="ss-row">
+        <button class="ss-btn${e.status==='writing'?' cur':''}" onclick="setSongStatus(${e.id},'writing')">${t('st_writing')}</button>
+        <button class="ss-btn${e.status==='rehearsal'?' cur':''}" onclick="setSongStatus(${e.id},'rehearsal')">${t('st_rehearsal')}</button>
+        <button class="ss-btn${e.status==='ready'?' cur':''}" onclick="setSongStatus(${e.id},'ready')">${t('st_ready')}</button>
+      </div>
+    </div>`).join('');
+}
+
+// ===== REHEARSALS =====
+function addRehearsal(){const D=pd();if(!D){toast(t('no_profile_msg'));return;}const e={id:Date.now(),date:v('r_date'),dur:v('r_dur'),members:v('r_members'),songs:v('r_songs'),decisions:v('r_decisions'),todo:v('r_todo')};if(!e.date)return;D.rehearsals.unshift(e);saveApp();['r_date','r_dur','r_members','r_songs','r_decisions','r_todo'].forEach(clear);tf('rForm');renderRehearsals();toast(t('saved'));}
+function delRehearsal(id){const D=pd();if(!D)return;D.rehearsals=D.rehearsals.filter(e=>e.id!==id);saveApp();renderRehearsals();toast(t('deleted'));}
+function renderRehearsals(){
+  const el=document.getElementById('rList');if(!needProf(el))return;
+  const D=pd();if(!D.rehearsals.length){el.innerHTML=empty('🔄','rehearsals_empty');return;}
+  el.innerHTML=D.rehearsals.map(e=>`
+    <div class="ecard">
+      <div class="ehead"><div><div class="etitle">${e.date?fd(e.date):'—'}</div><div class="emeta">${e.dur?e.dur+' min':''}${e.members?' · '+x(e.members):''}</div></div><button class="act-btn" onclick="delRehearsal(${e.id})">✕</button></div>
+      ${e.songs?`<div class="divl"></div><div class="sub-label">${t('f_songs_worked')}</div><div class="ebody">${x(e.songs)}</div>`:''}
+      ${e.decisions?`<div class="sub-label" style="margin-top:8px">${t('f_decisions')}</div><div class="ebody">${x(e.decisions)}</div>`:''}
+      ${e.todo?`<div class="sub-label" style="margin-top:8px;color:var(--accent)">${t('f_todo')}</div><div class="ebody">${x(e.todo)}</div>`:''}
+    </div>`).join('');
+}
+
+// ===== SETLIST =====
+let slMode_='pick';
+function openSlForm(){populateSlPick();setSlMode('pick');document.getElementById('slForm').style.display='block';}
+function closeSlForm(){document.getElementById('slForm').style.display='none';['sl_title','sl_dur','sl_note','sl_pick','sl_bpm'].forEach(clear);document.getElementById('sl_title').readOnly=false;document.getElementById('sl_title').style.opacity='1';}
+function slMode(m){slMode_=m;document.getElementById('slTabPick').classList.toggle('active',m==='pick');document.getElementById('slTabNew').classList.toggle('active',m==='new');document.getElementById('slPickRow').style.display=m==='pick'?'grid':'none';const ti=document.getElementById('sl_title');ti.readOnly=m==='pick';ti.style.opacity=m==='pick'?'.7':'1';if(m==='new'){clear('sl_pick');clear('sl_title');}}
+function setSlMode(m){slMode_=m;slMode(m);}
+function populateSlPick(){const sel=document.getElementById('sl_pick');if(!sel)return;const D=pd();const s=D?.songs||[];sel.innerHTML=!s.length?`<option value="">${t('sl_no_songs_opt')}</option>`:`<option value="">— ${t('sl_pick_label')} —</option>`+s.map(sg=>`<option value="${sg.id}">${x(sg.title)}${sg.style?' · '+x(sg.style):''}</option>`).join('');}
+function slPickSong(){const D=pd();const id=parseInt(document.getElementById('sl_pick').value);const s=D?.songs?.find(sg=>sg.id===id);document.getElementById('sl_title').value=s?s.title:'';document.getElementById('sl_bpm').value=s&&s.tempo?s.tempo:'';}
+function quickAddToSetlist(sid){go('setlist');openSlForm();document.getElementById('sl_pick').value=sid;slPickSong();document.getElementById('sl_dur').focus();}
+function addSetlist(){const D=pd();if(!D){toast(t('no_profile_msg'));return;}const pickId=slMode_==='pick'?(parseInt(document.getElementById('sl_pick').value)||0):0;const e={id:Date.now(),songId:pickId,title:v('sl_title'),bpm:parseInt(v('sl_bpm'))||0,dur:parseFloat(v('sl_dur'))||0,note:v('sl_note')};if(!e.title)return;D.setlist.push(e);saveApp();closeSlForm();renderSetlist();toast(t('saved'));}
+function launchMetro(bpm){go('metro');if(bpm>0){stopMetro();setBpm(bpm);startMetro();}else if(!M.running)startMetro();}
+function delSetlist(id){const D=pd();if(!D)return;D.setlist=D.setlist.filter(e=>e.id!==id);saveApp();renderSetlist();toast(t('deleted'));}
+function moveSetlist(id,d){const D=pd();if(!D)return;const i=D.setlist.findIndex(e=>e.id===id);const ni=i+d;if(ni<0||ni>=D.setlist.length)return;[D.setlist[i],D.setlist[ni]]=[D.setlist[ni],D.setlist[i]];saveApp();renderSetlist();}
+function renderSetlist(){
+  const el=document.getElementById('slList'),desc=document.getElementById('slDesc');
+  if(!needProf(el)){desc.textContent=t('setlist_desc');return;}
+  const D=pd();if(!D.setlist.length){el.innerHTML=empty('📋','setlist_empty');desc.textContent=t('setlist_desc');return;}
+  const tot=D.setlist.reduce((s,e)=>s+(e.dur||0),0);desc.textContent=`${t('setlist_total')} ${tot} ${t('min')}`;
+  el.innerHTML=D.setlist.map((e,i)=>{const linked=e.songId?D.songs?.find(s=>s.id===e.songId):null;const eBpm=e.bpm||(linked&&parseInt(linked.tempo))||0;return`<div class="sl-item"><span class="sl-pos">${i+1}</span><div style="flex:1"><div style="font-size:13px;font-weight:500">${x(e.title)}</div>${e.note?`<div class="sl-note">${x(e.note)}</div>`:''}</div>${eBpm?`<span class="sl-dur" style="color:var(--accent);font-weight:500">${eBpm} BPM</span>`:''} ${e.dur?`<span class="sl-dur">${e.dur} ${t('min')}</span>`:''}<div style="display:flex;gap:2px;align-items:center"><button class="act-btn" onclick="launchMetro(${eBpm})" style="font-size:14px">🎚️</button>${i>0?`<button class="act-btn move" onclick="moveSetlist(${e.id},-1)">↑</button>`:'<span style="width:24px"></span>'}${i<D.setlist.length-1?`<button class="act-btn move" onclick="moveSetlist(${e.id},1)">↓</button>`:'<span style="width:24px"></span>'}<button class="act-btn" onclick="delSetlist(${e.id})">✕</button></div></div>`;}).join('');
+}
+
+// ===== GOALS =====
+function addGoal(){const D=pd();if(!D){toast(t('no_profile_msg'));return;}const e={id:Date.now(),text:v('g_text'),horizon:v('g_horizon'),done:false};if(!e.text)return;D.goals.push(e);saveApp();clear('g_text');tf('gForm');renderGoals();toast(t('saved'));}
+function toggleGoal(id){const D=pd();if(!D)return;const e=D.goals.find(g=>g.id===id);if(e){e.done=!e.done;saveApp();renderGoals();}}
+function delGoal(id){const D=pd();if(!D)return;D.goals=D.goals.filter(g=>g.id!==id);saveApp();renderGoals();toast(t('deleted'));}
+function renderGoals(){
+  const el=document.getElementById('gSections');if(!needProf(el))return;
+  const D=pd();if(!D.goals.length){el.innerHTML=empty('🎯','goals_empty');return;}
+  const hz=[{k:'court',l:t('hz_short_lbl')},{k:'moyen',l:t('hz_medium_lbl')},{k:'long',l:t('hz_long_lbl')}];
+  el.innerHTML=hz.map(h=>{const gs=D.goals.filter(g=>g.horizon===h.k);if(!gs.length)return'';return`<div style="margin-bottom:22px"><div class="sub-label" style="margin-bottom:8px">${h.l}</div><div class="elist" style="gap:6px">${gs.map(g=>`<div class="goal-item"><input type="checkbox" class="goal-check" ${g.done?'checked':''} onchange="toggleGoal(${g.id})"><div class="goal-text${g.done?' done':''}">${x(g.text)}</div><button class="act-btn" onclick="delGoal(${g.id})">✕</button></div>`).join('')}</div></div>`;}).join('');
+}
+
+// ===== METRONOME =====
+const M={bpm:120,beats:4,cur:0,running:false,ctx:null,next:0,tid:null,taps:[]};
+const AHEAD=0.12,LOOK=25;
+function mCtx(){if(!M.ctx)M.ctx=new(window.AudioContext||window.webkitAudioContext)();return M.ctx;}
+function mClick(b,w){const ctx=mCtx();const o=ctx.createOscillator();const g=ctx.createGain();o.connect(g);g.connect(ctx.destination);o.frequency.value=b===0?1100:880;g.gain.setValueAtTime(b===0?.9:.6,w);g.gain.exponentialRampToValueAtTime(0.001,w+.06);o.start(w);o.stop(w+.07);}
+function mSched(){const ctx=mCtx();while(M.next<ctx.currentTime+AHEAD){mClick(M.cur,M.next);const b=M.cur,d=(M.next-ctx.currentTime)*1000;setTimeout(()=>mVis(b),Math.max(0,d));M.next+=60/M.bpm;M.cur=(M.cur+1)%M.beats;}M.tid=setTimeout(mSched,LOOK);}
+function mVis(b){document.querySelectorAll('.mb').forEach((el,i)=>el.classList.toggle('mb-on',i===b));}
+function startMetro(){if(M.running)return;M.running=true;const ctx=mCtx();if(ctx.state==='suspended')ctx.resume();M.cur=0;M.next=ctx.currentTime+.05;mSched();document.getElementById('metroPlay').textContent='■';document.getElementById('metroPlay').classList.add('on');}
+function stopMetro(){if(!M.running)return;M.running=false;clearTimeout(M.tid);M.tid=null;document.querySelectorAll('.mb').forEach(e=>e.classList.remove('mb-on'));document.getElementById('metroPlay').textContent='▶';document.getElementById('metroPlay').classList.remove('on');}
+function toggleMetro(){M.running?stopMetro():startMetro();}
+function setBpm(vv){const b=Math.max(20,Math.min(300,parseInt(vv)||120));M.bpm=b;document.getElementById('metroBpm').value=b;}
+function adjBpm(d){setBpm(M.bpm+d);if(M.running){stopMetro();startMetro();}}
+function setBeats(n){M.beats=n;M.cur=0;document.querySelectorAll('.ms-btn').forEach(b=>b.classList.toggle('active',parseInt(b.dataset.beats)===n));renderMetroBeats();if(M.running){stopMetro();startMetro();}}
+function renderMetroBeats(){const el=document.getElementById('metroBeats');if(!el)return;el.innerHTML=Array.from({length:M.beats},(_,i)=>`<div class="mb${i===0?' mb-acc':''}"></div>`).join('');}
+function tapTempo(){const now=Date.now();M.taps.push(now);if(M.taps.length>8)M.taps.shift();if(M.taps.length>1){let s=0;for(let i=1;i<M.taps.length;i++)s+=M.taps[i]-M.taps[i-1];setBpm(Math.round(60000/(s/(M.taps.length-1))));if(M.running){stopMetro();startMetro();}}}
+
+// ===== UTILS =====
+const v=id=>document.getElementById(id)?.value?.trim()||'';
+const clear=id=>{const el=document.getElementById(id);if(el)el.value='';};
+const x=s=>s?s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'):'';
+const fd=d=>{if(!d)return'—';const[y,m,dd]=d.split('-');return`${dd}/${m}/${y}`;};
+const empty=(ic,k)=>`<div class="empty"><div class="empty-icon">${ic}</div><div class="empty-msg">${t(k)}</div></div>`;
+function toast(msg){const el=document.getElementById('toast');el.textContent=msg;el.classList.add('show');setTimeout(()=>el.classList.remove('show'),2200);}
+function setToday(){const td=new Date().toISOString().split('T')[0];['s_date','r_date'].forEach(id=>{const el=document.getElementById(id);if(el&&!el.value)el.value=td;});}
+['sForm','rForm'].forEach(id=>{const el=document.getElementById(id);if(el)new MutationObserver(setToday).observe(el,{attributes:true,attributeFilter:['style']});});
+
+// ===== RENDER ALL =====
+function renderAll(){renderGroups();renderSessions();renderSongs();renderRehearsals();renderSetlist();renderGoals();renderMetroBeats();updatePill();}
+
+// ===== INIT =====
+applyLang();setToday();
+</script>
+</body>
+</html>
